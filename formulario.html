@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="gb18030">
+	<title>Consultar Cliente</title>
+</head>
+<body>
+<h1>Consultar Cliente</h1>
+
+<form><label for="id">ID:</label> <input id="id" name="id" type="text" /><br />
+<br />
+<input type="submit" value="Consultar" /></form>
+
+<div id="result"></div>
+<script>
+		const form = document.querySelector('form');
+		form.addEventListener('submit', event => {
+			event.preventDefault();
+			const id = document.querySelector('#id').value;
+			fetch(`http://200.35.36.103:9000/clientes?id=${id}`, {
+				method: 'GET',
+				mode: 'cors',
+				redirect:'follow'
+			})
+				.then(response => response.json())
+				.then(data => {
+					if (data.message) {
+						document.querySelector('#result').textContent = data.message;
+					} else {
+						const result = `
+							<p>Nombre: ${data.Nombre}</p>
+							<p>Entidad: ${data.Entidad}</p>
+							<p>ID: ${data.ID}</p>
+						`;
+						document.querySelector('#result').innerHTML = result;
+					}
+				})
+				.catch(error => {
+					console.error(error);
+					document.querySelector('#result').textContent = 'Ocurrio un error al procesar la solicitud.';
+				});
+		});
+	</script></body>
+</html>
