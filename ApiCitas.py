@@ -7,10 +7,10 @@ app = Flask(__name__)
 CORS(app)
 
 # Conexión a la base de datos
-server = 'SERVER'  # Nombre del servidor
-database = 'HCONCORDIA'  # Nombre de la base de datos
-username = 'sa'  # Nombre de usuario
-password = 'Sxg5dba123*'  # Contraseña
+server = 'x'  # Nombre del servidor
+database = 'x'  # Nombre de la base de datos
+username = 'x'  # Nombre de usuario
+password = 'xgi*'  # Contraseña
 conn = pyodbc.connect(f'DRIVER={{SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}')
 
 # Obtener nombre y entidad por número de cédula
