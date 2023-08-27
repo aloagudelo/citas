@@ -1,8 +1,9 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, escape
 from flask_cors import CORS
 import pyodbc
 import ssl
 from decimal import Decimal
+
 app = Flask(__name__)
 CORS(app)
 
@@ -14,23 +15,25 @@ password = 'Sxg5dba123*'  # Contraseña
 conn = pyodbc.connect(
     f'DRIVER={{SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}')
 
+# Función para escapar datos y prevenir XSS
+def escape_data(data):
+    return escape(data)
+
 # Obtener nombre y entidad por número de cédula
-
-
 @app.route('/clientes/<int:cedula>', methods=['GET'])
 def get_cliente(cedula):
     cursor = conn.cursor()
     cedula_str = str(cedula)
-    query = "select *from VIQ_APICITAS where ID LIKE  '%" + cedula_str + "%'"
-    cursor.execute(query)
+    query = "SELECT * FROM VIQ_APICITAS WHERE ID LIKE ?"
+    cursor.execute(query, ('%' + cedula_str + '%',))
     result = cursor.fetchone()
     cursor.close()
 
     if result:
         cliente = {
-            "Nombre": result.Nombre,
-            "Entidad": result.Entidad,
-            "ID": result.ID
+            "Nombre": escape_data(result.Nombre),
+            "Entidad": escape_data(result.Entidad),
+            "ID": escape_data(result.ID)
         }
         return jsonify(cliente)
     else:
@@ -38,23 +41,21 @@ def get_cliente(cedula):
         return jsonify({"message": "Cliente no encontrado"}), 404
 
 # Consultar cliente por ID
-
-
 @app.route('/clientes', methods=['GET'])
 def consultar_cliente():
     id = request.args.get('id')
     if id:
         cursor = conn.cursor()
-        query = "select *from VIQ_APICITAS where ID LIKE  '%" + id + "%'"
-        cursor.execute(query)
+        query = "SELECT * FROM VIQ_APICITAS WHERE ID LIKE ?"
+        cursor.execute(query, ('%' + id + '%',))
         result = cursor.fetchone()
         cursor.close()
 
         if result:
             cliente = {
-                "Nombre": result.Nombre,
-                "Entidad": result.Entidad,
-                "ID": result.ID
+                "Nombre": escape_data(result.Nombre),
+                "Entidad": escape_data(result.Entidad),
+                "ID": escape_data(result.ID)
             }
             return jsonify(cliente)
         else:
@@ -63,8 +64,6 @@ def consultar_cliente():
         return app.send_static_file('formulario.html')
 
 # Consultar médicos disponibles según el query proporcionado
-
-
 @app.route('/medicos_disponibles', methods=['GET'])
 def consultar_medicos_disponibles():
     fecha = request.args.get('fecha')
@@ -79,30 +78,28 @@ def consultar_medicos_disponibles():
         return jsonify({"error": "Formato de fecha inválido"}), 400
 
     cursor = conn.cursor()
-    query = f" SELECT *FROM VIQ_APIMEDICOS WHERE FECHA > '{fecha_int}'  "
-    cursor.execute(query)
+    query = f"SELECT * FROM VIQ_APIMEDICOS WHERE FECHA > ?"
+    cursor.execute(query, (fecha_int,))
     results = cursor.fetchall()
     cursor.close()
 
     if results:
         medicos_disponibles = []
         for result in results:
-            # Convertir el resultado en un diccionario para acceder a los campos por nombre
             medico = {
-                "NOMBRE PROFESIONAL": result[0],
-                "NOMBRE ESPECIALIDAD": result[1],
+                "NOMBRE PROFESIONAL": escape_data(result[0]),
+                "NOMBRE ESPECIALIDAD": escape_data(result[1]),
                 "FECHA": result[2],
                 "HORA1": result[3],
                 "CODIGO CLIENTE": result[4],
-                "NOMBRE CLIENTE": result[5],
-                "ACTIVIDAD": result[6]
+                "NOMBRE CLIENTE": escape_data(result[5]),
+                "ACTIVIDAD": escape_data(result[6])
             }
             medicos_disponibles.append(medico)
 
         return jsonify(medicos_disponibles)
     else:
         return jsonify({"message": "No hay médicos disponibles"}), 404
-
 
 if __name__ == '__main__':
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)

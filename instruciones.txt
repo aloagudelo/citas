@@ -1,0 +1,9 @@
+para correr la api en un servidor para produccion:
+1) pip install gunicorn
+2) Crear un Archivo WSGI:
+Crea un archivo Python (por ejemplo, wsgi.py) en el mismo directorio que tu archivo de la API (el archivo que compartiste). 
+Este archivo será el punto de entrada para Gunicorn.
+from tu_app import app  # Reemplaza "tu_app" con el nombre de tu archivo de la API
+
+if __name__ == '__main__':
+    app.run()
