@@ -2,16 +2,16 @@ from flask import Flask, jsonify, request, escape
 from flask_cors import CORS
 import pyodbc
 import ssl
-from decimal import Decimal
+from decouple import config
 
 app = Flask(__name__)
 CORS(app)
 
 # Conexión a la base de datos
-server = 'SERVER'  # Nombre del servidor
-database = 'HCONCORDIA'  # Nombre de la base de datos
-username = 'sa'  # Nombre de usuario
-password = 'Sxg5dba123*'  # Contraseña
+server = config('DB_SERVER', default='X')
+database = config('DB_DATABASE', default='X')
+username = config('DB_USERNAME', default='X')
+password = config('DB_PASSWORD', default='X')
 conn = pyodbc.connect(
     f'DRIVER={{SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}')
 

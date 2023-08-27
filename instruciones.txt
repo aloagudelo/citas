@@ -7,3 +7,8 @@ from tu_app import app  # Reemplaza "tu_app" con el nombre de tu archivo de la A
 
 if __name__ == '__main__':
     app.run()
+
+    -------------
+
+    Para manejo de variables de entorno :
+    No olvides instalar python-decouple utilizando pip install python-decouple antes de ejecutar el código.
