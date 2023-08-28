@@ -122,4 +122,4 @@ def consultar_medicos_disponibles():
 if __name__ == '__main__':
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     context.load_cert_chain('cert.pem', 'key.pem')
-    app.run(debug=True, host='0.0.0.0', port=9000, ssl_context=context)
+    app.run(debug=True, host='0.0.0.0', port=config('PORT'), ssl_context=context)
