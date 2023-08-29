@@ -93,7 +93,7 @@ def consultar_medicos_disponibles():
             return jsonify({"error": "Formato de fecha inválido"}), 400
 
         cursor = conn.cursor()
-        query = f"SELECT * FROM VIQ_APIMEDICOS WHERE FECHA > ?"
+        query = f"SELECT * FROM VIQ_APIMEDICOS WHERE FECHA = ?"
         cursor.execute(query, (fecha_int,))
         results = cursor.fetchall()
         cursor.close()
