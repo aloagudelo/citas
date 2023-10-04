@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Clientes y Médicos</title>
+</head>
+<body>
+    <h1>Consulta de Clientes</h1>
+    <label for="id">Cédula:</label>
+    <input type="text" id="id" placeholder="Número de cédula">
+    <button onclick="consultarCliente()">Consultar Cliente</button>
+    <p id="cliente-info"></p>
+
+    <div id="medicos-block" style="display: none;"> <!-- Bloque de médicos disponibles -->
+        <h1>Médicos Disponibles</h1>
+        <label for="fecha">Fecha:</label>
+        <input type="text" id="fecha" placeholder="Fecha">
+        <button onclick="cargarMedicos()">Cargar Médicos</button>
+        <select id="medico-select"></select>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
